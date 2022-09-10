@@ -113,6 +113,9 @@ use App\Models\GroupTest;
                                 @if (isset($group['doctor']))
                                     {{ $group['doctor']['name'] }}
                                 @endif
+                                @if (isset($group['normalDoctor']))
+                                    {{ $group['normalDoctor']['name'] }}
+                                @endif
                             </span>
 
                         </td>
@@ -297,12 +300,12 @@ use App\Models\GroupTest;
 
 
             @php
-                
+
                 $testsIds = [];
                 foreach ($group['tests'] as $key => $test) {
                     array_push($testsIds, $test['test']['id']);
                 }
-                
+
                 $patientGroups = Patient::with('groups.all_tests')
                     ->find($group['patient']['id'])
                     ->groups()
@@ -311,14 +314,14 @@ use App\Models\GroupTest;
                     ->where('done', 1)
                     ->orderBy('created_at', 'desc')
                     ->get();
-                
+
                 foreach ($patientGroups as $group) {
                     $group->tests = $group->all_tests->whereIn('test_id', $testsIds);
                 }
-                
+
                 $testId = [];
                 $idsOfTest = [];
-                
+
                 foreach ($patientGroups as $group) {
                     foreach ($group->tests as $test) {
                         if (!in_array($test->test_id, $testId)) {
@@ -327,11 +330,11 @@ use App\Models\GroupTest;
                         }
                     }
                 }
-                
+
                 $resultes = GroupTest::with('results.component', 'test.components', 'group')
                     ->whereIn('id', $idsOfTest)
                     ->get();
-                
+
             @endphp
 
             @foreach ($resultes as $res)

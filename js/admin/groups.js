@@ -65,7 +65,7 @@ var current_date = $('#system_date').val();
             }
         ],
         "processing": true,
-        "serverSide": true,
+        "serverSide": false,
         "order": [
             [1, "desc"]
         ],
